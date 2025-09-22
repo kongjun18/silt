@@ -1,6 +1,7 @@
 /* -*- Mode: C++; c-basic-offset: 4; indent-tabs-mode: nil -*- */
 #include "fawnds_sf.h"
 #include "file_io.h"
+#include "file_store.h"
 #include "configuration.h"
 #include "fawnds_factory.h"
 #include "print.h"
@@ -983,6 +984,59 @@ FawnDS_SF::ReadHeaderFromFile()
         return ERROR;
     }
     return OK;
+}
+
+// Disk I/O Statistics methods
+size_t FawnDS_SF::GetDiskReadOperations() const {
+    if (!data_store_) return 0;
+    
+    // Cast to FileStore to access disk I/O statistics
+    FileStore* file_store = dynamic_cast<FileStore*>(data_store_);
+    if (file_store) {
+        return file_store->GetDiskReadOperations();
+    }
+    
+    return 0;
+}
+
+size_t FawnDS_SF::GetDiskWriteOperations() const {
+    if (!data_store_) return 0;
+    
+    // Cast to FileStore to access disk I/O statistics
+    FileStore* file_store = dynamic_cast<FileStore*>(data_store_);
+    if (file_store) {
+        return file_store->GetDiskWriteOperations();
+    }
+    
+    return 0;
+}
+
+size_t FawnDS_SF::GetDiskBytesRead() const {
+    if (!data_store_) return 0;
+    
+    // Cast to FileStore to access disk I/O statistics
+    FileStore* file_store = dynamic_cast<FileStore*>(data_store_);
+    if (file_store) {
+        return file_store->GetDiskBytesRead();
+    }
+    
+    return 0;
+}
+
+size_t FawnDS_SF::GetDiskBytesWritten() const {
+    if (!data_store_) return 0;
+    
+    // Cast to FileStore to access disk I/O statistics
+    FileStore* file_store = dynamic_cast<FileStore*>(data_store_);
+    if (file_store) {
+        return file_store->GetDiskBytesWritten();
+    }
+    
+    return 0;
+}
+
+size_t FawnDS_SF::GetTotalDiskIOOperations() const {
+    return GetDiskReadOperations() + GetDiskWriteOperations();
 }
 
 }  // namespace fawn

@@ -5,6 +5,8 @@
 #include <time.h>
 #include <inttypes.h>
 #include <pthread.h>
+#include <unistd.h>
+#include <getopt.h>
 
 #include "fawnds_factory.h"
 #include "rate_limiter.h"

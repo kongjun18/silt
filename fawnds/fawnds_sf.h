@@ -51,6 +51,13 @@ namespace fawn {
 
         //virtual FawnDS_ConstIterator Find(const ConstValue& key) const;
         //virtual FawnDS_Iterator Find(const ConstValue& key);
+        
+        // Disk I/O Statistics
+        size_t GetDiskReadOperations() const;
+        size_t GetDiskWriteOperations() const;
+        size_t GetDiskBytesRead() const;
+        size_t GetDiskBytesWritten() const;
+        size_t GetTotalDiskIOOperations() const;
 
         struct IteratorElem : public FawnDS_IteratorElem {
             IteratorElem(const FawnDS_SF* fawnds);

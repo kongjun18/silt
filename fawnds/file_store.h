@@ -5,7 +5,7 @@
 #include "fawnds.h"
 #include "file_io.h"    // for iovec
 #include "task.h"
-#include <tbb/atomic.h>
+#include <atomic>
 #include <tbb/queuing_mutex.h>
 #include <tbb/queuing_rw_mutex.h>
 #include <boost/dynamic_bitset.hpp>
@@ -50,6 +50,13 @@ namespace fawn {
 
         virtual FawnDS_ConstIterator Find(const ConstValue& key) const;
         virtual FawnDS_Iterator Find(const ConstValue& key);
+        
+        // Disk I/O Statistics
+        size_t GetDiskReadOperations() const { return disk_read_ops_.load(); }
+        size_t GetDiskWriteOperations() const { return disk_write_ops_.load(); }
+        size_t GetDiskBytesRead() const { return disk_bytes_read_.load(); }
+        size_t GetDiskBytesWritten() const { return disk_bytes_written_.load(); }
+        size_t GetTotalDiskIOOperations() const { return disk_read_ops_.load() + disk_write_ops_.load(); }
 
         struct IteratorElem : public FawnDS_IteratorElem {
             FawnDS_IteratorElem* Clone() const;
@@ -82,9 +89,9 @@ namespace fawn {
     private:
         size_t data_len_;
 
-        tbb::atomic<off_t> next_append_id_;
+        std::atomic<off_t> next_append_id_;
         off_t end_id_;
-        tbb::atomic<off_t> next_sync_;
+        std::atomic<off_t> next_sync_;
 
         bool use_buffered_io_only_;
 
@@ -110,8 +117,14 @@ namespace fawn {
         };
         mutable tbb::queuing_rw_mutex cache_mutex_;
         mutable cache_entry cache_[cache_size_];
-        mutable tbb::atomic<size_t> cache_hit_;
-        mutable tbb::atomic<size_t> cache_miss_;
+        mutable std::atomic<size_t> cache_hit_;
+        mutable std::atomic<size_t> cache_miss_;
+        
+        // Disk I/O tracking counters
+        mutable std::atomic<size_t> disk_read_ops_;
+        mutable std::atomic<size_t> disk_write_ops_;
+        mutable std::atomic<size_t> disk_bytes_read_;
+        mutable std::atomic<size_t> disk_bytes_written_;
 
         class SyncTask : public Task {
         public:

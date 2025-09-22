@@ -34,7 +34,12 @@ namespace fawn {
         virtual FawnDS_Return Delete();
     };
 
-    struct FawnDS_ConstIterator : public std::iterator<std::bidirectional_iterator_tag, FawnDS_IteratorElem> {
+    struct FawnDS_ConstIterator {
+        using iterator_category = std::bidirectional_iterator_tag;
+        using value_type = FawnDS_IteratorElem;
+        using difference_type = std::ptrdiff_t;
+        using pointer = FawnDS_IteratorElem*;
+        using reference = FawnDS_IteratorElem&;
         FawnDS_IteratorElem* elem;
 
         FawnDS_ConstIterator();

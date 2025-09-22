@@ -2,6 +2,7 @@
 #include "fawnds_monitor.h"
 #include <stdio.h>
 #include <sys/time.h>
+#include <unistd.h>
 #ifndef __APPLE__
 #include <sys/sysinfo.h>
 #endif

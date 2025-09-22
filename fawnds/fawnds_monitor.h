@@ -5,7 +5,7 @@
 #include "fawnds_proxy.h"
 #include "rate_limiter.h"
 #include <pthread.h>
-#include <tbb/atomic.h>
+#include <atomic>
 
 namespace fawn {
 
@@ -32,6 +32,9 @@ namespace fawn {
         virtual FawnDS_Return Length(const ConstValue& key, size_t& len) const;
         virtual FawnDS_Return Get(const ConstValue& key, Value& data, size_t offset = 0, size_t len = -1) const;
 
+        FawnDS* GetUnderlyingStore() const { return store_; }
+        
+
     protected:
         static void* thread_main(void* arg);
 
@@ -40,8 +43,8 @@ namespace fawn {
 
         volatile bool exiting_;
 
-        mutable tbb::atomic<size_t> write_ops_;
-        mutable tbb::atomic<size_t> read_ops_;
+        mutable std::atomic<size_t> write_ops_;
+        mutable std::atomic<size_t> read_ops_;
 
         uint64_t last_time_;
 

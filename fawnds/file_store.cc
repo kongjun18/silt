@@ -19,6 +19,12 @@ namespace fawn {
     {
         next_append_id_ = end_id_ = 0;
         next_sync_ = 0;
+        
+        // Initialize disk I/O counters
+        disk_read_ops_ = 0;
+        disk_write_ops_ = 0;
+        disk_bytes_read_ = 0;
+        disk_bytes_written_ = 0;
 
         int_initialize();
     }
@@ -125,9 +131,9 @@ namespace fawn {
 
         // TODO: concurrent operations
 
-        file_store->next_append_id_ = next_append_id_;
+        file_store->next_append_id_.store(next_append_id_.load());
         file_store->end_id_ = end_id_;
-        file_store->next_sync_ = next_sync_;
+        file_store->next_sync_.store(next_sync_.load());
 
         return OK;
     }
@@ -733,6 +739,10 @@ namespace fawn {
                 fprintf(stderr, "FileStore::int_pread(): cannot read: %s\n", strerror(errno));
                 return false;
             }
+            
+            // Track disk I/O statistics
+            disk_read_ops_++;
+            disk_bytes_read_ += read_len;
 
             // put to cache
             if (req_count <= page_size_ * cache_size_) {
@@ -797,6 +807,12 @@ namespace fawn {
 
         // do write
         ssize_t written_len = pwritev(fd_buffered_sequential_, iov, count, offset);
+        
+        // Track disk I/O statistics
+        if (written_len > 0) {
+            disk_write_ops_++;
+            disk_bytes_written_ += written_len;
+        }
 
         // mark affected chunks dirty
         {

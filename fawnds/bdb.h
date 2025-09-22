@@ -4,7 +4,7 @@
 
 #include "fawnds.h"
 #include "config.h"
-#include <tbb/atomic.h>
+#include <atomic>
 
 #ifdef HAVE_LIBDB
 #include <db.h>
@@ -66,7 +66,7 @@ namespace fawn {
         size_t key_len_;
         size_t data_len_;
 
-        tbb::atomic<size_t> size_;
+        std::atomic<size_t> size_;
 
         friend struct IteratorElem;
     };

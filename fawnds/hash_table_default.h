@@ -27,11 +27,11 @@ class HashTableDefault : public FawnDS {
     static const uint32_t INDEXMASK = (1 << INDEXBITS) - 1;
     static const uint32_t VALIDBITMASK = KEYFRAGMASK+1;
 
-    static const double EXCESS_BUCKET_FACTOR = 1.1;
-    static const double MAX_DELETED_RATIO = 0.8;
-    static const double MAX_LOAD_FACTOR = 0.9;
+    static constexpr double EXCESS_BUCKET_FACTOR = 1.1;
+    static constexpr double MAX_DELETED_RATIO = 0.8;
+    static constexpr double MAX_LOAD_FACTOR = 0.9;
 
-    static const double PROBES_BEFORE_REHASH = 8;
+    static constexpr double PROBES_BEFORE_REHASH = 8;
     //static const double PROBES_BEFORE_REHASH = 16;
 
 protected:
